@@ -1,0 +1,72 @@
+conky.config = {
+--#####################
+-- - Conky settings - #
+--#####################
+    update_interval = 1,
+    total_run_times = 0,
+    net_avg_samples = 1,
+    cpu_avg_samples = 1,
+
+--imlib_cache_size 0
+    double_buffer = true,
+    no_buffers = true,
+
+--####################
+-- - Text settings - #
+--####################
+    use_xft = true,
+    font = 'Ubuntu:size=9',
+    override_utf8_locale = true,
+    text_buffer_size = 2048,
+
+--############################
+-- - Window specifications - #
+--############################
+    own_window_class = 'Conky',
+    own_window = true,
+    own_window_type = 'normal',
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+--own_window_argb_visual yes
+--own_window_argb_value 100
+
+    alignment = 'top_right',
+    gap_x = -2,
+    gap_y = 30,
+    minimum_width = 350, minimum_height = 520,
+
+
+    default_bar_width = 60, default_bar_height = 10,
+
+-- - Graphics settings - #
+--########################
+    draw_shades = false,
+
+    default_color = '#ffffff',
+    default_shade_color = '#1d1d1d',
+    color0 = '#ffffff',
+    color1 = '#ffffff',
+    color2 = '#ffffff',
+
+    lua_load = '/home/sebastien/.conky/script.lua',
+    lua_draw_hook_pre = 'main'
+};
+
+conky.text = [[
+
+#---IMAGES----
+${image ~/.conky/base.png -p 10,0 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,73 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,146 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,219 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,292 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,365 -s 339x86 -n}
+${image ~/.conky/base.png -p 10,438 -s 339x86 -n}
+${image ~/.conky/calendrier.png -p 28,20 -s 45x45 -n}
+${image ~/.conky/meteo.png -p 28,93 -s 45x45 -n}
+${image ~/.conky/meteo.png -p 28,166 -s 45x45 -n}
+${image ~/.conky/systeme.png -p 28,239 -s 45x45 -n}
+${image ~/.conky/documents.png -p 28,312 -s 45x45 -n}
+${image ~/.conky/internet.png -p 28,385 -s 45x45 -n}
+${image ~/.conky/musique.png -p 28,458 -s 45x45 -n}
+]];
