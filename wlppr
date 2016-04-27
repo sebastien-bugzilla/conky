@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+#
+#Installer gnome-schedule (pour ajouter une tache cron)
+#Créer une nouvelle tache en donnant directement le lien vers le script
+#Le fichier doit être executé comme "Application X"
+#
+prefixe=`date +%Y-%m-%d`
+if [ -z $1 ] ; then
+	wget -q http://www.goodfon.su/1920x1200/ -O index.html
+	sed -e 's/itemprop/\nitemprop/g' index.html | grep ^itemprop | grep "img src" > liste_wlppr
+	# commande facultative : je n'aime pas les fond d'écran avec les voitures. La commande suivante en supprime pas mal...
+	sed -i '/lexus/d;/bentley/d;/mclaren/d;/bugatti/d;/mercedes/d;/jeep/d;/ford/d;/chevrolet/d;/bmw/d;/land-rover/d;/mitsubishi/d;/lamborghini/d;/porsche/d;/audi/d;/fiat/d;/buick/d;/ferrari/d;/cadillac/d' liste_wlppr
+	# fin commande facultative.
+	numWlppr=`wc -l liste_wlppr | cut -d" " -f1`
+	numAleatoire=`shuf -i1-$numWlppr -n1`
+	image=`sed -n $((numAleatoire))p liste_wlppr | cut -d\" -f4 | sed -e 's/wallpaper/original/g;s/middle/1920x1080/g'`
+	#echo $image
+	wget -q -U firefox $image
+	nomImage=`basename $image`
+	nomFinal=$prefixe"_"$nomImage
+	cp $nomImage /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
+	mv $nomImage ~/Images/$nomFinal
+	rm index.html liste_wlppr
+else
+	if [ -e "$1" ] ; then
+		verif=`echo $1 | grep \/`
+		if [ -z $verif ] ; then
+		    echo "tata"
+			nomImage=$1
+			nomFinal=$prefixe"_"$nomImage
+			cp $PWD/$1 /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
+			cp $PWD/$1 ~/Images/$nomFinal
+		else
+		    echo "toto"
+			nomImage=`basename $1`
+			nomFinal=$prefixe"_"$nomImage
+			cp $1 /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
+			cp $1 ~/Images/$nomFinal
+		fi
+	elif [ $1 = "live" ] ; then
+		wget -q http://wlppr.com/live.1920x1200.jpg
+		nomImage=live.1920x1200.jpg
+		nomFinal=$prefixe"_"$nomImage
+		cp $nomImage /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
+		cp $nomImage ~/Images/$nomFinal
+		rm $nomImage
+	else
+		exit 0
+	fi
+	
+fi
+
+
+gsettings set org.gnome.desktop.background picture-uri "file:///home/sebastien/Images/$nomFinal"
+gsettings set org.gnome.desktop.screensaver picture-uri "file:///home/sebastien/Images/$nomFinal"
+
+RgbHighlight=`convert ~/Images/$nomFinal -resize 3x3 -filter cubic -fuzz 15% -brightness-contrast 15% -colorspace RGB -format '%[pixel:s]' info:-`
+
+txRedHighlight=`echo $RgbHighlight | cut -d\( -f2 | cut -d, -f1`
+txGreenHighlight=`echo $RgbHighlight | cut -d\( -f2 | cut -d, -f2`
+txBlueHighlight=`echo $RgbHighlight | cut -d\( -f2 | cut -d, -f3 | cut -d\) -f1`
+
+luminance=$(echo "$txRedHighlight * 0.2126 + $txGreenHighlight * 0.7152 + $txBlueHighlight * 0.0722" | bc -l)
+luminance=${luminance%.*}
+
+txRedBack=$((txRedHighlight*20/45))
+txGreenBack=$((txGreenHighlight*20/45))
+txBlueBack=$((txBlueHighlight*20/45))
+
+if [ $luminance -gt 180 ] ; then
+    sed -e 's/1,1,1/0,0,0/g' ~/.conky/script_modele.lua > ~/.conky/script.lua
+    #sed -e 's/1,1,1/0,0,0/g' ~/.conky/script_dyn_modele.lua > ~/.conky/script_dyn.lua
+else
+    cp ~/.conky/script_modele.lua ~/.conky/script.lua
+    #cp ~/.conky/script_dyn_modele.lua ~/.conky/script_dyn.lua
+fi
+
+
+convert ~/.conky/base_init.png -fuzz 30% -fill "rgb($txRedHighlight,$txGreenHighlight,$txBlueHighlight)" -opaque 'rgb(255,0,0)' ~/.conky/temp.png
+convert ~/.conky/temp.png -fuzz 20% -fill "rgb($txRedBack,$txGreenBack,$txBlueBack)" -opaque 'rgb(0,0,255)' ~/.conky/base.png
+
+rm ~/.conky/temp.png
