@@ -137,7 +137,7 @@ function graph_line(Maj)
         cpu[i]=tonumber(conky_parse("${cpu cpu"..i.."}"))
     end
     -- UP Down
-    local ratio_upload=tonumber(conky_parse("${upspeedf enp7s0}")/55*100)
+    local ratio_upload=tonumber(conky_parse("${upspeedf enp7s0}")/70*100)
     local ratio_download=tonumber(conky_parse("${downspeedf enp7s0}")/302*100)
     local totalup=conky_parse("${totalup enp7s0}")
     num_car_up=string.find(totalup,"MiB")
@@ -251,7 +251,7 @@ function graph_line(Maj)
     local y_img_6 = 365
     draw_line(0.2,100,130,y_img_6+30,200,2)
     draw_line(1,ratio_upload,130,y_img_6+30,200,2)
-    affiche_texte("Ubuntu",11,295,y_img_6+27,0.7,"55 KiB")
+    affiche_texte("Ubuntu",11,295,y_img_6+27,0.7,"70 KiB")
     
     local max_upload=math.max(math.floor(total_upload/10)+1,10)*10
     draw_line(0.2,100,130,y_img_6+45,200,2)
