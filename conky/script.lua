@@ -424,7 +424,7 @@ function display_text(Maj)
     ##############################################]]
     local y_img_5 = 292
     affiche_texte("Heydings Icons",18,100,y_img_5+34,1,"H")
-    affiche_texte("Heydings Icons",18,100,y_img_5+54,1,"L")
+    affiche_texte("OpenLogos",18,100,y_img_5+54,1,"u")
     affiche_texte("Heydings Icons",18,100,y_img_5+74,1,"F")
 
     affiche_texte("Ubuntu",15,123,y_img_5+33,1,espace1)
