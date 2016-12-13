@@ -4,7 +4,7 @@ require 'os'
 require 'posix'
 
 -- Parametre a modifier
-local departement="31000" -- indiquer le département pour la météo
+local departement="6453974" -- indiquer le département pour la météo
 local disque_1="/home"
 local disque_2="/"
 local disque_3="/media/Documents"
@@ -499,19 +499,13 @@ function conky_main()
     cr = cairo_create(cs)
     local updates=tonumber(conky_parse('${updates}'))
 
-    local interval=30
-    local timer=(updates % interval)
+    local timer_meteo=(updates % 1800)
     local T1 = os.time()
 
     -- Gestion mise a jour météo
-    if os.difftime(T1, T) >= 300 then
-        --if os.difftime(T1, T0) >= 3600 then
-        --    meteo.maj(departement, "7jours")
-        --    T0=T1
-        --end
+    if timer_meteo == 5 then
         meteo.maj(departement, "all")
         meteo.maj(departement, "all")
-        T=T1
     end
 
 
