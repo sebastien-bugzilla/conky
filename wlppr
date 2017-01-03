@@ -5,34 +5,44 @@
 #Créer une nouvelle tache en donnant directement le lien vers le script
 #Le fichier doit être executé comme "Application X"
 #
+USER_AGENT="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0"
+HEADER="Accept: text/html"
 prefixe=`date +%Y-%m-%d`
 if [ -z $1 ] ; then
-	wget -q http://www.goodfon.su/1920x1200/ -O index.html
-	sed -e 's/itemprop/\nitemprop/g' index.html | grep ^itemprop | grep "img src" > liste_wlppr
-	# commande facultative : je n'aime pas les fond d'écran avec les voitures. La commande suivante en supprime pas mal...
-	sed -i '/lexus/d;/bentley/d;/mclaren/d;/bugatti/d;/mercedes/d;/jeep/d;/ford/d;/chevrolet/d;/bmw/d;/land-rover/d;/mitsubishi/d;/lamborghini/d;/porsche/d;/audi/d;/fiat/d;/buick/d;/ferrari/d;/cadillac/d' liste_wlppr
-	# fin commande facultative.
+	wget -q --header=$HEADER --user-agent=$USER_AGENT http://www.goodfon.su/1920x1080/ -O index.html
+	wget -q --header=$HEADER --user-agent=$USER_AGENT http://www.goodfon.su/1920x1080/index-2.html -O index2.html
+	#curl http://www.goodfon.su/1920x1200/ > index.html
+	#sed -e 's/itemprop/\nitemprop/g' index.html | grep ^itemprop | grep "img src" > liste_wlppr
+	#sed -i '/lexus/d;/bentley/d;/mclaren/d;/bugatti/d;/mercedes/d;/jeep/d;/ford/d;/chevrolet/d;/bmw/d;/land-rover/d;/mitsubishi/d;/lamborghini/d;/porsche/d;/audi/d;/fiat/d;/buick/d;/ferrari/d;/cadillac/d;/dodge/d;/williams/d;/devushka/d;/girl/d;/aston/d;/nissan/d;/volvo/d;/koshka/d;/sobaka/d;/koshki/d;/subaru/d' liste_wlppr
+	# version 20/11/2016
+	grep -A 3 itemprop index*.html | sed -e '/div class/d' | sed -r 's/(.*)(http.*\.jpg)(.*)/\2/g;s/^ *//g;/^--$/d;/href/ s/(.*)(>.*<)(.*)/\2/g;s/[<>]//g' | sed -r '/jpg/{ N; s/\n/ /g}' > liste_wlppr
+	#sed -i '/Aviation/d;/Girls/d;/Food/d;/Animals/d;/Cats/d;/Cars/d;/Mood/d;/New Year/d;/Weapon/d;/Holidays/d;/Nature/d;/Situations/d;/Dog/d;/Style/d;/Flowers/d;/Macro/d' liste_wlppr
+	sed -i '/devushka/d;/woman/d;/girl/d' liste_wlppr
+	grep -E "Hi-Tech|Abstraction|Anime|City|Painting|Games|Interior|Space|Macro|Music|Minimalism|Landscapes|Miscellanea|Rendering|Textures|Fantasy|Films|Sports|Men" liste_wlppr > liste_wlppr1
+	mv liste_wlppr1 liste_wlppr
+	sed -i '/Men/p' liste_wlppr
+	shuf liste_wlppr -o liste_wlppr1
+	mv liste_wlppr1 liste_wlppr
+	
 	numWlppr=`wc -l liste_wlppr | cut -d" " -f1`
 	numAleatoire=`shuf -i1-$numWlppr -n1`
-	image=`sed -n $((numAleatoire))p liste_wlppr | cut -d\" -f4 | sed -e 's/wallpaper/original/g;s/middle/1920x1080/g'`
+	image=`sed -n $((numAleatoire))p liste_wlppr | cut -d" " -f1 | sed -e 's/wallpaper/original/g;s/middle/1920x1080/g'`
 	#echo $image
-	wget -q -U firefox $image
+	wget -q --header=$HEADER --user-agent=$USER_AGENT $image
 	nomImage=`basename $image`
 	nomFinal=$prefixe"_"$nomImage
 	cp $nomImage /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
 	mv $nomImage ~/Images/$nomFinal
-	rm index.html liste_wlppr
+	rm index.html liste_wlppr index2.html
 else
 	if [ -e "$1" ] ; then
 		verif=`echo $1 | grep \/`
 		if [ -z $verif ] ; then
-		    echo "tata"
 			nomImage=$1
 			nomFinal=$prefixe"_"$nomImage
 			cp $PWD/$1 /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
 			cp $PWD/$1 ~/Images/$nomFinal
 		else
-		    echo "toto"
 			nomImage=`basename $1`
 			nomFinal=$prefixe"_"$nomImage
 			cp $1 /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
@@ -50,6 +60,15 @@ else
 	fi
 	
 fi
+
+## calcul de la luminance sur le wlppr actuel :
+# image_old=`gsettings get org.gnome.desktop.background picture-uri | sed -e "s_'__g;s_file://__g"`
+# rgb_old=`convert $image_old -resize 3x3 -filter cubic -fuzz 15% -brightness-contrast 15% -colorspace RGB -format '%[pixel:s]' info:-`
+# red_old=`echo $rgb_old | cut -d\( -f2 | cut -d, -f1`
+# gre_old=`echo $rgb_old | cut -d\( -f2 | cut -d, -f2`
+# blu_old=`echo $rgb_old | cut -d\( -f2 | cut -d, -f3 | cut -d\) -f1`
+# lumi_old=$(echo "$red_old * 0.2126 + $gre_old * 0.7152 + $blu_old * 0.0722" | bc)
+# lumi_old=${lumi_old%.*}
 
 
 gsettings set org.gnome.desktop.background picture-uri "file:///home/sebastien/Images/$nomFinal"
@@ -76,6 +95,26 @@ else
     #cp ~/.conky/script_dyn_modele.lua ~/.conky/script_dyn.lua
 fi
 
+#if [[ "$luminance" -gt 180 && "$lumi_old" -gt 180 ]] ; then
+#    echo ""
+#elif [[ "$luminance" -lt 180 && "$lumi_old" -lt 180 ]] ; then
+#    echo ""
+#else
+#    if [[ "$luminance" -gt 180 ]] ; then
+#        cp ~/.conky/template_conkyrc ~/.conkyrc
+#        cp ~/.conky/template_conky_orange ~/.conky/conky_orange.lua
+#    else
+#        sed -e 's/000000/ffffff/g' ~/.conky/template_conkyrc > ~/.conkyrc
+#        sed -e 's/0x000000/0xffffff/g' ~/.conky/template_conky_orange > ~/.conky/conky_orange.lua
+#    fi
+#fi
+##if [ $luminance -gt 180 ] ; then
+##    cp ~/.conky/template_conkyrc ~/.conkyrc
+##    cp ~/.conky/template_conky_orange ~/.conky/conky_orange.lua
+##else
+##    sed -e 's/000000/ffffff/g' ~/.conky/template_conkyrc > ~/.conkyrc
+##    sed -e 's/0x000000/0xffffff/g' ~/.conky/template_conky_orange > ~/.conky/conky_orange.lua
+##fi
 
 convert ~/.conky/base_init.png -fuzz 30% -fill "rgb($txRedHighlight,$txGreenHighlight,$txBlueHighlight)" -opaque 'rgb(255,0,0)' ~/.conky/temp.png
 convert ~/.conky/temp.png -fuzz 20% -fill "rgb($txRedBack,$txGreenBack,$txBlueBack)" -opaque 'rgb(0,0,255)' ~/.conky/base.png
