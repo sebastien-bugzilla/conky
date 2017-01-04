@@ -45,14 +45,14 @@ local demon=1
 
 -- Partie Fonctions
 local function draw_circle(alpha,progress,x_center,y_center,radius,epaisseur)
-    cairo_set_source_rgba(cr,1,1,1,alpha)
+    cairo_set_source_rgba(cr,0,0,0,alpha)
     cairo_set_line_width(cr,epaisseur)
     cairo_arc(cr, x_center, y_center, radius, 0-math.pi/2, progress * 2 * math.pi / 100 - math.pi/2)
     cairo_stroke(cr)
 end
 
 local function draw_circle_gauge(alpha,nb_gauge,angle_step,angle_step_ink,x_center,y_center,radius,epaisseur)
-    cairo_set_source_rgba(cr,1,1,1,alpha)
+    cairo_set_source_rgba(cr,0,0,0,alpha)
     cairo_set_line_width(cr,epaisseur)
     local angle_step_rad=angle_step*math.pi/180
     local angle_step_ink_rad=angle_step_ink*math.pi/180
@@ -69,8 +69,8 @@ end
 
 local function draw_line(alpha,progress,x_ligne,y_ligne,longueur,epaisseur)
     progress=progress or 0
-    local red,green,blue=1,1,1
-    cairo_set_source_rgba (cr,1,1,1,alpha)
+    local red,green,blue=0,0,0
+    cairo_set_source_rgba (cr,0,0,0,alpha)
     cairo_set_line_width (cr, epaisseur)
     cairo_set_dash(cr,1.,0,1)
     cairo_move_to (cr, x_ligne, y_ligne)
@@ -79,8 +79,8 @@ local function draw_line(alpha,progress,x_ligne,y_ligne,longueur,epaisseur)
 end
 
 local function draw_dash_line(alpha,progress,x_ligne,y_ligne,longueur,epaisseur)
-    local red,green,blue=1,1,1
-    cairo_set_source_rgba (cr,1,1,1,alpha)
+    local red,green,blue=0,0,0
+    cairo_set_source_rgba (cr,0,0,0,alpha)
     cairo_set_line_width (cr, epaisseur)
     cairo_set_dash(cr,5.,1,0)
     cairo_move_to (cr, x_ligne, y_ligne)
@@ -89,8 +89,8 @@ local function draw_dash_line(alpha,progress,x_ligne,y_ligne,longueur,epaisseur)
 end
 
 local function draw_scale(alpha,x_ligne,y_ligne,nb_step,long_step_ink,long_step,epaisseur)
-    local red,green,blue=1,1,1
-    cairo_set_source_rgba (cr,1,1,1,alpha)
+    local red,green,blue=0,0,0
+    cairo_set_source_rgba (cr,0,0,0,alpha)
     cairo_set_line_width (cr, epaisseur)
     local i = 1
     local x_step=x_ligne
@@ -104,7 +104,7 @@ local function draw_scale(alpha,x_ligne,y_ligne,nb_step,long_step_ink,long_step,
 end
 
 local function affiche_texte(police,taille,x,y,alpha,texte)
-    local red,green,blue,alpha=1,1,1,alpha
+    local red,green,blue,alpha=0,0,0,alpha
     cairo_select_font_face (cr, police, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size (cr, taille)
     cairo_set_source_rgba (cr,red,green,blue,alpha)

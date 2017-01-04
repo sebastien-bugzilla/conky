@@ -112,38 +112,46 @@ do
                 r = cc["sys"]["sunrise"]
                 if r == nil then
                     r = 1483228860
+                end
             elseif valeur=="coucher_soleil" then
                 r = cc["sys"]["sunset"]
                 if r == nil then
                     r = 1483315140
+                end
             elseif valeur=="meteo_id" then
                 r = cc["weather"][1]["id"]
                 if r == nil then
                     r = "w"
+                end
             elseif valeur=="meteo_main" then
                 r = cc["weather"][1]["main"]
             elseif valeur=="meteo_description" then
                 r = cc["weather"][1]["description"]
                 if r == nil then
                     r = "Inconnue"
+                end
             elseif valeur=="meteo_icone" then
                 r = cc["weather"][1]["icon"]
             elseif valeur=="temp" then
                 r = cc["main"]["temp"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="temp_min" then
                 r = cc["main"]["temp_min"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="temp_max" then
                 r = cc["main"]["temp_max"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="pression" then
                 r = cc["main"]["pressure"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="sea_level" then
                 r = cc["main"]["sea_level"]
             elseif valeur=="grnd_level" then
@@ -152,10 +160,12 @@ do
                 r = cc["main"]["humidity"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="vent_vitesse" then
                 r = cc["wind"]["speed"]
                 if r == nil then
                     r = 0
+                end
             elseif valeur=="vent_direction" then
                 r = cc["wind"]["deg"]
             elseif valeur=="couverture_nuageuse" then
@@ -178,18 +188,22 @@ do
                 r = sj["list"][jour]["dt"]
                 if r == nil then
                     r = 1483358400
+                end
             elseif valeur=="temp_jour" then
                 r = sj["list"][jour]["temp"]["day"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="temp_min" then
                 r = sj["list"][jour]["temp"]["min"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="temp_max" then
                 r = sj["list"][jour]["temp"]["max"]
                 if r == nil then
                     r = "0"
+                end
             elseif valeur=="temp_nuit" then
                 r = sj["list"][jour]["temp"]["night"]
             elseif valeur=="temp_soir" then
@@ -204,6 +218,7 @@ do
                 r = sj["list"][jour]["weather"][1]["id"]
                 if r == nil then
                     r = "w"
+                end
             elseif valeur=="meteo_main" then
                 r = sj["list"][jour]["weather"][1]["main"]
             elseif valeur=="meteo_description" then
