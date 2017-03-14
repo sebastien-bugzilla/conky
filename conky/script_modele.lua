@@ -487,7 +487,7 @@ function conky_main()
         if list:find("playing_clementine.py")~=nil then
             demon=0
         else
-            demon=os.execute('python '..chemin..'/playing_clementine.py &')
+            demon=os.execute('python '..chemin..'playing_clementine.py &')
         end
     end
 

@@ -7,6 +7,7 @@
 #
 USER_AGENT="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0"
 HEADER="Accept: text/html"
+DEST="/media/Documents/personnalisation_pc/Wallpaper/wlppr"
 prefixe=`date +%Y-%m-%d`
 if [ -z $1 ] ; then
 	wget -q --header=$HEADER --user-agent=$USER_AGENT http://www.goodfon.su/1920x1080/ -O index.html
@@ -31,7 +32,10 @@ if [ -z $1 ] ; then
 	wget -q --header=$HEADER --user-agent=$USER_AGENT $image
 	nomImage=`basename $image`
 	nomFinal=$prefixe"_"$nomImage
-	cp $nomImage /media/Documents/personnalisation_pc/Wallpaper/wlppr/$nomFinal
+	if [ -e $DEST/$prefixe* ] ; then
+	    rm $DEST/$prefixe*
+	fi
+	cp $nomImage $DEST/$nomFinal
 	mv $nomImage ~/Images/$nomFinal
 	rm index.html liste_wlppr index2.html
 else

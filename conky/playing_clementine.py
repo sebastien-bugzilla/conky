@@ -19,11 +19,11 @@ class maj:
         '''Get system bus'''
         bus = dbus.SessionBus()
         try:
-            self.amarok = bus.get_object('org.mpris.clementine', '/Player')
+            self.amarok = bus.get_object('org.mpris.MediaPlayer2.clementine', '/org/mpris/MediaPlayer2')
         except:
             self.amarok=None
             return
-        self.amarokdict = self.amarok.GetMetadata()
+        self.amarokdict = self.amarok.Get('org.mpris.MediaPlayer2.Player', 'Metadata', dbus_interface='org.freedesktop.DBus.Properties')
         self.holdtitle=""
         self.holdcover=""
 
@@ -41,14 +41,14 @@ class maj:
         ret = {}
         cpos = mt = mtime = etime = rtime = progress = None
 
-        if self.amarokdict.has_key('mtime'):
+        if self.amarokdict.has_key('mpris:length'):
             try :
-                cpos = self.amarok.PositionGet()/1000
+                cpos = self.amarok.Get('org.mpris.MediaPlayer2.Player', 'Position', dbus_interface='org.freedesktop.DBus.Properties')/1000000
             except:
                 self.amarok=None
                 return
 
-            mt = self.amarokdict['mtime']/1000
+            mt = self.amarokdict['mpris:length']/1000000
             mtime = str(mt/60)+":"+str(mt%60) if mt%60>9 else str(mt/60)+":0"+str(mt%60)
             etime = str(cpos/60)+":"+str(cpos%60) if cpos%60>9 else str(cpos/60)+":0"+str(cpos%60)
             rtime = str((mt-cpos)/60)+":"+str((mt-cpos)%60) if (mt-cpos)%60>9 else str((mt-cpos)/60)+":0"+str((mt-cpos)%60)
@@ -64,32 +64,32 @@ class maj:
             temp["progress"]=progress
 
         try :
-            self.amarokdict = self.amarok.GetMetadata()
+            self.amarokdict = self.amarok.Get('org.mpris.MediaPlayer2.Player', 'Metadata', dbus_interface='org.freedesktop.DBus.Properties')
         except:
             self.amarok=None
             return
 
-        if self.amarokdict.has_key('artist') :
-            ret["artist"] = self.unaccent(self.amarokdict['artist'][0:40])
-        if self.amarokdict.has_key('title'):
-            ret["title"] = self.unaccent(self.amarokdict['title'][0:40])
+        if self.amarokdict.has_key('xesam:artist'):
+            ret["artist"] = self.unaccent(self.amarokdict['xesam:artist'][0][0:40])
+        if self.amarokdict.has_key('xesam:title'):
+            ret["title"] = self.unaccent(self.amarokdict['xesam:title'][0:40])
         else :
             ret["title"] = self.holdtitle
-        if self.amarokdict.has_key('album'):
-            ret["album"] = self.unaccent(self.amarokdict['album'][0:35])
-        if self.amarokdict.has_key('genre'):
-            ret["genre"] = self.unaccent(self.amarokdict['genre'][0:40])
+        if self.amarokdict.has_key('xesam:album'):
+            ret["album"] = self.unaccent(self.amarokdict['xesam:album'][0:35])
+        if self.amarokdict.has_key('xesam:genre'):
+            ret["genre"] = self.unaccent(self.amarokdict['xesam:genre'][0][0:40])
         if self.amarokdict.has_key('year'):
             ret["year"] = str(self.amarokdict['year'])
-        if self.amarokdict.has_key('tracknumber'):
-            ret["tracknumber"] = str(self.amarokdict['tracknumber'])
-        if self.amarokdict.has_key('audio-bitrate'):
-            ret["bitrate"] = str(self.amarokdict['audio-bitrate'])
+        if self.amarokdict.has_key('xesam:trackNumber'):
+            ret["tracknumber"] = str(self.amarokdict['xesam:trackNumber'])
+        if self.amarokdict.has_key('bitrate'):
+            ret["bitrate"] = str(self.amarokdict['bitrate'])
         if self.amarokdict.has_key('audio-samplerate'):
             ret["samplerate"] = str(self.amarokdict['audio-samplerate'])
 
-        if self.amarokdict.has_key('arturl'):
-            cover = self.amarokdict['arturl']
+        if self.amarokdict.has_key('mpris:artUrl'):
+            cover = self.amarokdict['mpris:artUrl']
             if cover != "" and self.holdcover != cover :
                 self.holdcover=cover
                 try :
